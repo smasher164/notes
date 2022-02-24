@@ -211,7 +211,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Responsive',
+      title: 'Notes',
       theme: ThemeData(
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: Colors.black,
@@ -219,6 +219,12 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.grey,
       ),
       home: Scaffold(
+        appBar: AppBar(
+          title: Text('Notes'),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          brightness: Brightness.light,
+        ),
         body: root(context),
       ),
       debugShowCheckedModeBanner: false,
