@@ -221,6 +221,7 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(
           title: Text('Notes'),
+          centerTitle: false,
           backgroundColor: Colors.transparent,
           elevation: 0,
           brightness: Brightness.light,
