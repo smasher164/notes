@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(
@@ -215,6 +216,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: Colors.black,
+        ),
+        appBarTheme: AppBarTheme(
           backwardsCompatibility: false,
           systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
