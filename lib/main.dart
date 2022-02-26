@@ -215,6 +215,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: Colors.black,
+          backwardsCompatibility: false,
+          systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
         primarySwatch: Colors.grey,
       ),
@@ -224,7 +226,6 @@ class MyApp extends StatelessWidget {
           centerTitle: false,
           backgroundColor: Colors.transparent,
           elevation: 0,
-          brightness: Brightness.light,
         ),
         body: root(context),
       ),
