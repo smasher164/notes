@@ -173,7 +173,6 @@ class MyApp extends StatelessWidget {
       MaterialPageRoute(builder: (context) => 
         Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.transparent,
             elevation: 0,
           ),
           body: LayoutBuilder(
@@ -218,8 +217,8 @@ class MyApp extends StatelessWidget {
           cursorColor: Colors.black,
         ),
         appBarTheme: AppBarTheme(
-          backwardsCompatibility: false,
-          systemOverlayStyle: SystemUiOverlayStyle.light,
+          systemOverlayStyle: SystemUiOverlayStyle.dark,
+          backgroundColor: Colors.transparent,
         ),
         primarySwatch: Colors.grey,
       ),
@@ -227,7 +226,6 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: Text('Notes'),
           centerTitle: false,
-          backgroundColor: Colors.transparent,
           elevation: 0,
         ),
         body: root(context),
