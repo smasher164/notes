@@ -141,12 +141,10 @@ class MyApp extends StatelessWidget {
         var _controller = quill.QuillController(
           document: notes.list[position.position],
           selection: const TextSelection.collapsed(offset: 0),
-          onReplaceText: (index, len, data) {
-            // notes.set(position.position, value);
-            notes.notifyListeners();
-            return true;
-          },
         );
+        _controller.changes.listen((ev) {
+          notes.notifyListeners();
+        });
         return Expanded(
           child: Column(
             children: [
