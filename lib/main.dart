@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter/services.dart';
+import 'dart:isolate';
+import 'dart:convert';
 
 void main() {
   runApp(
@@ -10,9 +12,17 @@ void main() {
         ChangeNotifierProvider(create: (context) => Notes()),
         ChangeNotifierProvider(create: (context) => Position()),
       ],
-      child: const MyApp(),
+      child: MyApp(),
     ),
   );
+}
+
+void fromOtherThread(SendPort sendPort) {
+  ReceivePort receivePort = ReceivePort();
+  sendPort.send(receivePort.sendPort);
+  receivePort.listen((delta) {
+    print(jsonEncode(delta));
+  });
 }
 
 class Position with ChangeNotifier {
@@ -42,7 +52,9 @@ class Notes with ChangeNotifier {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+
+  SendPort? sendPort;
 
   String title(quill.Document d) {
     if (d.isEmpty()) {
@@ -144,6 +156,7 @@ class MyApp extends StatelessWidget {
         );
         _controller.changes.listen((ev) {
           notes.notifyListeners();
+          sendPort?.send(ev.item2);
         });
         return Expanded(
           child: Column(
@@ -197,11 +210,23 @@ class MyApp extends StatelessWidget {
   }
 
   Widget root(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        return Row(
-          children: layout(context, constraints),
-        );
+    ReceivePort receivePort = ReceivePort();
+    Isolate.spawn(fromOtherThread, receivePort.sendPort);
+    return FutureBuilder<dynamic>(
+      future: receivePort.first,
+      builder: (BuildContext context, snapshot) {
+        if (snapshot.hasData) {
+          sendPort = snapshot.data;
+          return LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              return Row(
+                children: layout(context, constraints),
+              );
+            },
+          );
+        } else {
+          return Container();
+        }
       },
     );
   }
