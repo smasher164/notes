@@ -33,6 +33,8 @@
             pkgs.gnome3.adwaita-icon-theme
             pkgs.hicolor-icon-theme
             pkgs.utillinux
+            pkgs.cargo
+            pkgs.rustc
           ];
           shellHook = ''
             export XDG_DATA_DIRS="$XDG_DATA_DIRS:$XDG_ICON_DIRS:$GSETTINGS_SCHEMAS_PATH"
