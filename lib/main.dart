@@ -4,8 +4,10 @@ import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter/services.dart';
 import 'dart:isolate';
 import 'dart:convert';
+import 'ffi.dart';
 
 void main() {
+  api.hello();
   runApp(
     MultiProvider(
       providers: [
