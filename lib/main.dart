@@ -7,7 +7,6 @@ import 'dart:convert';
 import 'ffi.dart';
 
 void main() {
-  api.hello();
   runApp(
     MultiProvider(
       providers: [
@@ -23,7 +22,8 @@ void fromOtherThread(SendPort sendPort) {
   ReceivePort receivePort = ReceivePort();
   sendPort.send(receivePort.sendPort);
   receivePort.listen((delta) {
-    print(jsonEncode(delta));
+    var jsondata = jsonEncode(delta);
+    api.printJson(data: jsondata);
   });
 }
 

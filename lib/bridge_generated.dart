@@ -12,7 +12,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'dart:ffi' as ffi;
 
 abstract class Backend {
-  Future<void> hello({dynamic hint});
+  Future<void> printJson({required String data, dynamic hint});
 }
 
 class BackendImpl extends FlutterRustBridgeBase<BackendWire>
@@ -22,18 +22,33 @@ class BackendImpl extends FlutterRustBridgeBase<BackendWire>
 
   BackendImpl.raw(BackendWire inner) : super(inner);
 
-  Future<void> hello({dynamic hint}) => executeNormal(FlutterRustBridgeTask(
-        callFfi: (port_) => inner.wire_hello(port_),
+  Future<void> printJson({required String data, dynamic hint}) =>
+      executeNormal(FlutterRustBridgeTask(
+        callFfi: (port_) =>
+            inner.wire_print_json(port_, _api2wire_String(data)),
         parseSuccessData: _wire2api_unit,
         constMeta: const FlutterRustBridgeTaskConstMeta(
-          debugName: "hello",
-          argNames: [],
+          debugName: "print_json",
+          argNames: ["data"],
         ),
-        argValues: [],
+        argValues: [data],
         hint: hint,
       ));
 
   // Section: api2wire
+  ffi.Pointer<wire_uint_8_list> _api2wire_String(String raw) {
+    return _api2wire_uint_8_list(utf8.encoder.convert(raw));
+  }
+
+  int _api2wire_u8(int raw) {
+    return raw;
+  }
+
+  ffi.Pointer<wire_uint_8_list> _api2wire_uint_8_list(Uint8List raw) {
+    final ans = inner.new_uint_8_list(raw.length);
+    ans.ref.ptr.asTypedList(raw.length).setAll(0, raw);
+    return ans;
+  }
 
   // Section: api_fill_to_wire
 
@@ -66,17 +81,37 @@ class BackendWire implements FlutterRustBridgeWireBase {
           lookup)
       : _lookup = lookup;
 
-  void wire_hello(
+  void wire_print_json(
     int port_,
+    ffi.Pointer<wire_uint_8_list> data,
   ) {
-    return _wire_hello(
+    return _wire_print_json(
       port_,
+      data,
     );
   }
 
-  late final _wire_helloPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>('wire_hello');
-  late final _wire_hello = _wire_helloPtr.asFunction<void Function(int)>();
+  late final _wire_print_jsonPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Int64, ffi.Pointer<wire_uint_8_list>)>>('wire_print_json');
+  late final _wire_print_json = _wire_print_jsonPtr
+      .asFunction<void Function(int, ffi.Pointer<wire_uint_8_list>)>();
+
+  ffi.Pointer<wire_uint_8_list> new_uint_8_list(
+    int len,
+  ) {
+    return _new_uint_8_list(
+      len,
+    );
+  }
+
+  late final _new_uint_8_listPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<wire_uint_8_list> Function(
+              ffi.Int32)>>('new_uint_8_list');
+  late final _new_uint_8_list = _new_uint_8_listPtr
+      .asFunction<ffi.Pointer<wire_uint_8_list> Function(int)>();
 
   void free_WireSyncReturnStruct(
     WireSyncReturnStruct val,
@@ -105,6 +140,13 @@ class BackendWire implements FlutterRustBridgeWireBase {
           'store_dart_post_cobject');
   late final _store_dart_post_cobject = _store_dart_post_cobjectPtr
       .asFunction<void Function(DartPostCObjectFnType)>();
+}
+
+class wire_uint_8_list extends ffi.Struct {
+  external ffi.Pointer<ffi.Uint8> ptr;
+
+  @ffi.Int32()
+  external int len;
 }
 
 typedef DartPostCObjectFnType = ffi.Pointer<

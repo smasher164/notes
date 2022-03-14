@@ -1,3 +1,3 @@
-pub fn hello() {
-    println!("hello from rust!");
+pub fn print_json(data: String) {
+    println!("{}", data);
 }
